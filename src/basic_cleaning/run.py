@@ -42,13 +42,13 @@ def go(args):
     outlier_df = dataframe[mask_correct_prices].copy ()
 
     try:
-        mask_lon_lat = dataframe['longitude'].between (-74.25, -73.50) & dataframe['latitude'].between (40.5, 41.2)
+        mask_lon_lat = outlier_df['longitude'].between (-74.25, -73.50) & outlier_df['latitude'].between (40.5, 41.2)
     except TypeError as err:
         logger.error(err)
         logger.error('Longitude or/and Latitude are not numbers')
         raise TypeError(err)
 
-    dataframe = dataframe[mask_lon_lat].copy ()
+    outlier_df = outlier_df[mask_lon_lat].copy ()
 
     # Convert last_review to datetime
     outlier_df['last_review'] = pd.to_datetime (outlier_df['last_review'])

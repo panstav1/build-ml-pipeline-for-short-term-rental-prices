@@ -34,13 +34,21 @@ def go(args):
     logger.info('Applying min/max outlier detection on price column')
     try:
         # Outlier drop on price
-        idx = dataframe['price'].between (min_price, max_price)
+        mask_correct_prices = dataframe['price'].between (min_price, max_price)
     except TypeError as err:
         logger.error(err)
         logger.error('Min price and Max Price are not numbers')
         raise TypeError(err)
+    outlier_df = dataframe[mask_correct_prices].copy ()
 
-    outlier_df = dataframe[idx].copy ()
+    try:
+        mask_lon_lat = dataframe['longitude'].between (-74.25, -73.50) & dataframe['latitude'].between (40.5, 41.2)
+    except TypeError as err:
+        logger.error(err)
+        logger.error('Longitude or/and Latitude are not numbers')
+        raise TypeError(err)
+
+    dataframe = dataframe[mask_lon_lat].copy ()
 
     # Convert last_review to datetime
     outlier_df['last_review'] = pd.to_datetime (outlier_df['last_review'])
